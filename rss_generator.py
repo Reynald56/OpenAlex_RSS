@@ -11,31 +11,57 @@ from datetime import datetime, timedelta
 from feedgen.feed import FeedGenerator
 
 # 🔐 CONFIG — EDIT CONTACT_EMAIL & TOPICS BELOW
-CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "you@example.org")
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "reynaldbrion@proton.me")
 PROJECT_NAME = "OpenAlexTopicRSS"
 
-# ✅ Define feeds by TOPIC (not concept!)
-# Find Topic IDs at: https://openalex.org/topics
 FEEDS = {
-    # Example 1: AI Ethics
-    "ai-ethics": {
-        "topic_id": "T10764",  # "AI ethics" — verify at https://openalex.org/topics/T10764
-        "title": "AI Ethics & Responsible AI",
-        "description": "Recent scholarly works on AI ethics, algorithmic fairness, and responsible AI systems."
+    "cb_mkt_influence": {
+        "topic_id": "T14244", 
+        "title": "Consumer Behavior and Marketing Influence",
+        "description": "This cluster of papers focuses on consumer behavior, purchase decision making, and the factors influencing consumer choices in various industries such as retail, hospitality, and e-commerce."
     },
-    # Example 2: Large Language Models
-    "llms": {
-        "topic_id": "T12128",  # "Large language models"
-        "title": "Large Language Models (LLMs)",
-        "description": "Cutting-edge research on LLMs, training, alignment, and applications."
+    
+    "cog_psych_research": {
+        "topic_id": "T13777",  
+        "title": "Cognitive and psychological constructs research",
+        "description": "This cluster of papers revolves around the application of laddering theory, means-end chain analysis, and personal construct psychology in understanding consumer cognition, decision-making processes, and value hierarchies"
     },
-    # 🌟 Add your own! Format:
-    # "your-topic-key": {
-    #     "topic_id": "Txxxxx",
-    #     "title": "Readable Title",
-    #     "description": "1-sentence summary."
-    # }
-}
+
+    "soc_inter_research": {
+        "topic_id": "T10314",  
+        "title": "Social and Intergroup Psychology",
+        "description": "TBD"
+    },
+
+    "optimism_hope_wb": {
+        "topic_id": "T12485",  
+        "title": "Optimism, Hope, and Well-being",
+        "description": "TBD"
+    },
+
+    "dig_games_media": {
+        "topic_id": "T11197",
+        "title": "Digital Games and Media",
+        "description": "TBD"
+    },
+
+    "gen_stu": {
+        "topic_id": "T12275", 
+        "title": "Gender and Feminist Studies",
+        "description": "TBD"
+    },
+
+    "sport_smes": {
+        "topic_id": "T11474", 
+        "title": "Sport and Mega-Event Impacts",
+        "description": "TBD"
+    },
+
+    "sport_gender": {
+        "topic_id": "T10942",  # "Large language models"
+        "title": "Sports, Gender, and Society",
+        "description": "TBD"
+    },
 
 RSS_DIR = "rss"
 os.makedirs(RSS_DIR, exist_ok=True)
