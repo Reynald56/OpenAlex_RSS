@@ -29,9 +29,8 @@ jobs:
           pip install requests feedgen
 
       - name: 🧠 Generate RSS Feeds (Topics-based)
-        env:
-          # 🔐 REQUIRED: Replace with your real academic/professional email
-          CONTACT_EMAIL: "you@institution.edu"
+        env: 
+          CONTACT_EMAIL: "reynaldbrion@proton.me"
         run: |
           python rss_generator.py
 
