@@ -23,52 +23,29 @@ jobs:
       - name: Install dependencies
         run: pip install requests feedgen
 
-      - name: Generate RSS
-        env:
-          CONTACT_EMAIL: "reynaldbrion@proton.me"
-        run: |
-          python -c "
-      import os
-      os.makedirs('rss', exist_ok=True)
-      with open('rss/test.xml', 'w') as f:
-          f.write('''<?xml version='1.0' encoding='UTF-8'?>
-      <rss version='2.0'><channel><title>Test</title></channel></rss>''')
-      print('✅ rss/test.xml created (size: ' + str(os.path.getsize('rss/test.xml')) + ' bytes)')
-      "
-import requests, datetime, xml.etree.ElementTree as ET
-from feedgen.feed import FeedGenerator
+      - name: Generate and Commit RSS
+  env:
+    CONTACT_EMAIL: "you@gmail.com"
+  run: |
+    # Create RSS content
+    cat > rss-test.xml << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>✅ SUCCESS</title>
+    <link>https://openalex.org</link>
+    <description>Your OpenAlex RSS pipeline is working!</description>
+  </channel>
+</rss>
+EOF
 
-email = os.getenv('CONTACT_EMAIL')
-fg = FeedGenerator()
-fg.title('Test OpenAlex RSS')
-fg.link(href='https://openalex.org')
-fg.description('Test feed. Data: OpenAlex (CC0). Contact: ' + email)
-fg.rights('CC0. Data from OpenAlex.')
+    # Create rss/ and move file
+    mkdir -p rss
+    mv rss-test.xml rss/test.xml
 
-fe = fg.add_entry()
-fe.title('✅ Workflow is working!')
-fe.link(href='https://openalex.org')
-fe.description('<p>Congrats! Your GitHub Actions + OpenAlex RSS pipeline is alive.</p>')
-
-os.makedirs('rss', exist_ok=True)
-fg.rss_file('rss/test.xml', pretty=True)
-print('✅ rss/test.xml generated')
-"
-
-      - name: Commit RSS files
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          
-          # Force-add all files in rss/ (even new ones)
-          mkdir -p rss
-          git add rss/
-          
-          # Check if there's anything to commit
-          if git diff --cached --quiet; then
-            echo "ℹ️ No changes to commit."
-          else
-            git commit -m "🤖 Auto-update RSS feeds"
-            git push
-            echo "✅ Changes committed and pushed."
-          fi
+    # Commit
+    git config user.name "GitHub Action"
+    git config user.email "action@github.com"
+    git add rss/test.xml
+    git commit -m "🤖 First RSS" || echo "Skip commit"
+    git push
