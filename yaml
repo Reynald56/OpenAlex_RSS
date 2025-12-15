@@ -1,0 +1,44 @@
+# .github/workflows/update-rss.yml
+name: 📡 Generate OpenAlex Topic-Based RSS Feeds
+
+on:
+  # Run daily at 02:00 UTC
+  schedule:
+    - cron: '0 2 * * *'
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📥 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests feedgen
+
+      - name: 🧠 Generate RSS Feeds (Topics-based)
+        env:
+          # 🔐 REQUIRED: Replace with your real academic/professional email
+          CONTACT_EMAIL: "you@institution.edu"
+        run: |
+          python rss_generator.py
+
+      - name: 📤 Commit RSS files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add rss/
+          git commit -m "🤖 Auto-update Topic-based RSS feeds" || echo "No changes"
+          git push
