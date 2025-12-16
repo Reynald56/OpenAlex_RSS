@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: 🛎️ Checkout
         uses: actions/checkout@v4
-
-      - name: 🧪 Debug: Show current dir & files
+        
+      - name: Debug - Show current dir & files
         run: |
           pwd
           ls -la
