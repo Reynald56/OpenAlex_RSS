@@ -1,10 +1,8 @@
-name: 📡 Generate OpenAlex RSS
+# .github/workflows/update-rss.yml
+name: 📡 Generate OpenAlex RSS (Debug Mode)
 
 on:
-  workflow_dispatch:  # Allows manual run (no schedule yet)
-  # Once working, add:
-  # schedule:
-  #   - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,39 +11,54 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: 🧪 Debug: Show current dir & files
+        run: |
+          pwd
+          ls -la
+          echo "Git status:"
+          git status
 
-      - name: Install dependencies
-        run: pip install requests feedgen
+      - name: 📁 Create rss/ and test.xml (shell-only, no Python)
+        run: |
+          # Absolute path safety
+          RSS_DIR="$PWD/rss"
+          mkdir -p "$RSS_DIR"
+          echo "✅ rss/ created at: $RSS_DIR"
 
-      - name: Generate and Commit RSS
-  env:
-    CONTACT_EMAIL: "you@gmail.com"
-  run: |
-    # Create RSS content
-    cat > rss-test.xml << 'EOF'
+          # Write minimal valid RSS
+          cat > "$RSS_DIR/test.xml" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>✅ SUCCESS</title>
+    <title>🚀 SUCCESS: OpenAlex RSS Pipeline</title>
     <link>https://openalex.org</link>
-    <description>Your OpenAlex RSS pipeline is working!</description>
+    <description>Data from OpenAlex (CC0). Generated via GitHub Actions.</description>
+    <item>
+      <title>✅ Your workflow works!</title>
+      <link>https://github.com/${{ github.repository }}</link>
+      <description><![CDATA[<p>Congratulations — your ethical OpenAlex RSS feed is ready to scale.</p>]]></description>
+    </item>
   </channel>
 </rss>
 EOF
 
-    # Create rss/ and move file
-    mkdir -p rss
-    mv rss-test.xml rss/test.xml
+          # Verify file exists
+          ls -la "$RSS_DIR"
+          echo "File size: $(wc -c < "$RSS_DIR/test.xml") bytes"
 
-    # Commit
-    git config user.name "GitHub Action"
-    git config user.email "action@github.com"
-    git add rss/test.xml
-    git commit -m "🤖 First RSS" || echo "Skip commit"
-    git push
+      - name: 📤 Commit to GitHub
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          
+          # Stage exactly this file
+          git add rss/test.xml
+          
+          # Commit unconditionally (force)
+          git commit -m "🤖 RSS: test.xml" --allow-empty
+          git push
+          
+          echo "✅ Push completed. Check repo for rss/test.xml"
